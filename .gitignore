@@ -1,0 +1,37 @@
+# ── deps / build ────────────────────────────────
+node_modules/
+**/node_modules/
+.next/
+out/
+dist/
+**/dist/
+build/
+desktop/build_tmp/
+*.spec
+
+# ── env / secrets ───────────────────────────────
+.env
+.env.local
+**/.env
+!**/.env.example
+cf-admin/.dev.vars
+cf-admin/.wrangler/
+cf-admin/seed-admin.sql
+
+# ── python ──────────────────────────────────────
+__pycache__/
+*.pyc
+
+# ── uploads / artefak lokal ─────────────────────
+public/uploads/*
+!public/uploads/.gitkeep
+header.png
+*.log
+tsconfig.tsbuildinfo
+
+# ── tooling ─────────────────────────────────────
+.playwright-mcp/
+
+# ── os ──────────────────────────────────────────
+.DS_Store
+Thumbs.db

@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("admins")
+}
+
+model Contestant {
+  id         Int      @id @default(autoincrement())
+  noUrut     Int      @unique @map("no_urut")
+  nama       String
+  laguWajib  String   @map("lagu_wajib")
+  laguBebas  String   @map("lagu_bebas")
+  asalSkpd   String   @map("asal_skpd")
+  fotoPath   String?  @map("foto_path")
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  votes Vote[]
+
+  @@map("contestants")
+}
+
+model Vote {
+  id               Int      @id @default(autoincrement())
+  voterName        String   @map("voter_name")
+  voterWhatsapp    String?  @map("voter_whatsapp")
+  contestantId     Int      @map("contestant_id")
+  kodeUndian       String   @unique @map("kode_undian")
+  deviceIdHash     String   @unique @map("device_id_hash")
+  fingerprintHash  String   @map("fingerprint_hash")
+  ipHash           String   @map("ip_hash")
+  userAgentHash    String   @map("user_agent_hash")
+  turnstileVerified Boolean @default(false) @map("turnstile_verified")
+  fcmToken         String?  @map("fcm_token") @db.Text
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  contestant Contestant  @relation(fields: [contestantId], references: [id], onDelete: Cascade)
+  draw       UndianDraw?
+
+  @@index([contestantId])
+  @@index([fingerprintHash])
+  @@map("votes")
+}
+
+model UndianDraw {
+  id       Int      @id @default(autoincrement())
+  voteId   Int      @unique @map("vote_id")
+  drawnAt  DateTime @default(now()) @map("drawn_at")
+
+  vote Vote @relation(fields: [voteId], references: [id], onDelete: Cascade)
+
+  @@map("undian_draws")
+}
+
+model Setting {
+  id               Int      @id @default(1)
+  headerImagePath  String?  @map("header_image_path")
+  faviconPath      String?  @map("favicon_path")
+  eventTitle       String   @default("SALI IDOL") @map("event_title")
+  voteDeadline     DateTime? @map("vote_deadline")
+  turnstileSiteKey   String? @map("turnstile_site_key")
+  turnstileSecretKey String? @map("turnstile_secret_key")
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
+
+model AuditLog {
+  id              Int      @id @default(autoincrement())
+  action          String
+  contestantId    Int?     @map("contestant_id")
+  deviceIdHash    String?  @map("device_id_hash")
+  fingerprintHash String?  @map("fingerprint_hash")
+  ipHash          String?  @map("ip_hash")
+  userAgentHash   String?  @map("user_agent_hash")
+  result          String?
+  reason          String?
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([action])
+  @@map("audit_logs")
+}

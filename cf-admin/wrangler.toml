@@ -1,0 +1,17 @@
+name = "saliidol"
+compatibility_date = "2024-12-01"
+pages_build_output_dir = "dist"
+
+# D1 database binding (isi database_id setelah `wrangler d1 create saliidol`)
+[[d1_databases]]
+binding = "DB"
+database_name = "saliidol"
+database_id = "e305e594-fe7f-49ca-b8de-aba208187a7b"
+
+# R2 bucket binding
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "saliidol-media"
+
+# SESSION_SECRET diset sebagai secret:
+#   wrangler pages secret put SESSION_SECRET
